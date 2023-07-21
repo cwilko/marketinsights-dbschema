@@ -3,6 +3,7 @@ from sqlalchemy.engine import URL
 
 from sqlalchemy.orm import sessionmaker
 import traceback
+import datetime
 
 
 class MIDatabase:
@@ -34,10 +35,15 @@ class MIDatabase:
     def dropTable(self, metadata):
         metadata.create_all(self.engine)
 
+    def getDate(self):
+        return datetime.date.today().strftime("%Y-%m-%d")
+
     def addEntry(self, values):
         try:
             entryDetails = self.dbClass(**values)
-            self.session.add(propertyDetails)
+            entryDetails.created_on = self.getDate()
+            entryDetails.updated_on = self.getDate()
+            self.session.add(entryDetails)
             self.session.commit()
             print(entryDetails)
         except Exception as e:
@@ -55,13 +61,14 @@ class MIDatabase:
             .all()
         ):
             values = entries.pop(each.id)
-            values["created_on"] = each.created_on  # Preserve field
+            values["updated_on"] = self.getDate()
             entries_to_update += 1
             if update:
                 self.session.merge(self.dbClass(**values))
 
         # Bulk mappings for everything that needs to be inserted
         for entry in entries.values():
+            entry["created_on"] = entry["updated_on"] = self.getDate()
             entries_to_put.append(entry)
 
         self.session.bulk_insert_mappings(self.dbClass, entries_to_put)
