@@ -3,7 +3,7 @@ from sqlalchemy.engine import URL
 
 from sqlalchemy.orm import sessionmaker
 import traceback
-import datetime
+from datetime import datetime
 
 
 class MIDatabase:
@@ -36,13 +36,12 @@ class MIDatabase:
         metadata.create_all(self.engine)
 
     def getDate(self):
-        return datetime.date.today().strftime("%Y-%m-%d")
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def addEntry(self, values):
         try:
             entryDetails = self.dbClass(**values)
-            entryDetails.created_on = self.getDate()
-            entryDetails.updated_on = self.getDate()
+            entryDetails.created_on = entryDetails.updated_on = self.getDate()
             self.session.add(entryDetails)
             self.session.commit()
             print(entryDetails)
