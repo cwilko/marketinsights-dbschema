@@ -19,6 +19,7 @@ class House(Base):
     description = Column(String(512), nullable=False)
     sold = Column(String(4), nullable=False)
     sold_on = Column(DateTime(), default=datetime.now)
+    updated_on = Column(DateTime(), default=datetime.now)
 
     def __repr__(self):
         return f"House( {self.id} , {self.location})"
