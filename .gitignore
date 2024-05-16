@@ -11,5 +11,4 @@ test/data
 *.pkl
 build/
 cert
-notebooks
-alembic.ini
+notebooks/*
